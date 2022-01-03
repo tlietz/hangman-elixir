@@ -17,9 +17,15 @@ defmodule Dictionary do
   # do and end delineate body of our module, and the bodies of the function it contains.
   # Function names are either names or one of the Elixir operators. Must start with a lowercase letter or underscore.
   def word_list do
-    words = File.read!("assets/words.txt")
-    word_list = String.split(words, "~r/\n/", trim: true)
-    IO.write(word_list)
+    # |> is an operator that takes the operand and puts it as the first argument
+    "assets/words.txt"
+    |> File.read!()
+    |> String.split(~r/\n/, trim: true)
+  end
+
+  def random_word do
+    word_list()
+    |> Enum.random()
   end
 end
 
@@ -36,3 +42,6 @@ end
 # `binary` means a collection of bytes. For most common purposes, `binary` can be mentally substituted for `string`.
 
 # Function id = name/arity(number of params)
+
+# In a functional language, every function returns a value.
+# In elixir, the return value of a function is the last statement that is executed in that function
