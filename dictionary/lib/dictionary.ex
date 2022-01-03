@@ -53,4 +53,14 @@ end
 # Functions transform state into new state. They never change the state that's given them.
 # Idead functions are pure: given a particular input, they will always produce the same output.
 # This increases composability and reusability of functions.
-# The goal of FP is to think about our programs as one big function, transforming its inputs to outputs.
+#
+# The goal with FP is to think about our programs as one big function, transforming its inputs to outputs.
+# Then, we break it down into progressively smaller functions, until we end up with a bunch of small functions; each function doing one thing.
+#
+# The main tools are functional composition and pattern matching.
+# Functional Composition:
+# Chaining functions so that the output of one becomes the input of the next.
+#
+# Pattern Matching:
+# Allows writing different versions of the same function.
+# The version that is called depends on the value that is passed in.
