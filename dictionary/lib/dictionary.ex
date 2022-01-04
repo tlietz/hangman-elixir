@@ -29,38 +29,42 @@ defmodule Dictionary do
   end
 end
 
-### Notes on `mix`
-# mix on its own compiles project.
-# mix run runs it, and mix run -e <<code>> executes the code in the context of the project.
-# iex -S mix starts iex in the context of project; it uses mix to build the application environment and then enters iex
-#
-# inside iex:
-# r ModuleName recompiles the file containing ModuleName
-# c "lib/name.ex" compiles the given file
+defmodule Temp do
+  def swap({a, b}) do
+    {b, a}
+  end
 
-### Misc Notes
-# `binary` means a collection of bytes. For most common purposes, `binary` can be mentally substituted for `string`.
+  def same(a, a) do
+    true
+  end
 
-# Function id = name/arity(number of params)
+  def same(_, _) do
+    false
+  end
+end
 
-# In a functional language, every function returns a value.
-# In elixir, the return value of a function is the last statement that is executed in that function
+defmodule Lists do
+  def len([]), do: 0
+  def len([_h | t]), do: 1 + len(t)
 
-# OO has methods, FP has functions
-# In OO, objects change their state by invoking instance methods. This means that state is coupled to behavior.
-#
-# In FP, state is decoupled from behavior. State is always immutable.
-# Functions transform state into new state. They never change the state that's given them.
-# Idead functions are pure: given a particular input, they will always produce the same output.
-# This increases composability and reusability of functions.
-#
-# The goal with FP is to think about our programs as one big function, transforming its inputs to outputs.
-# Then, we break it down into progressively smaller functions, until we end up with a bunch of small functions; each function doing one thing.
-#
-# The main tools are functional composition and pattern matching.
-# Functional Composition:
-# Chaining functions so that the output of one becomes the input of the next.
-#
-# Pattern Matching:
-# Allows writing different versions of the same function.
-# The version that is called depends on the value that is passed in.
+  def sum([]), do: 0
+  def sum([h | t]), do: h + sum(t)
+
+  def square([]), do: []
+  def square([h | t]), do: [h * h | square(t)]
+
+  def mult([], _x), do: []
+  def mult([h | t], x), do: [h * x | mult(t, x)]
+
+  # This is like what the module `Enum.map` does.
+  def map([], _func), do: []
+  def map([h | t], func), do: [func.(h) | map(t, func)]
+
+  def sum_pair([]), do: []
+  def sum_pair([t]), do: [t | []]
+  def sum_pair([h1, h2 | t]), do: [h1 + h2 | sum_pair(t)]
+
+  def even_length?([]), do: true
+  def even_length?([_t]), do: false
+  def even_length?([_h1, _h2 | t]), do: even_length?(t)
+end

@@ -145,7 +145,7 @@ Optional flag interpretations depend on the sigil. In `~r/foo/i`, it makes the p
 
 Some Sigils that come as a part of Elixir (there are also `~D//`,`~N//`, and `~T//`, that generate dates and times):
 
-```
+```elixir
 ~c// ~C// list of character codes
 ~r// ~R// regular expression
 ~s// ~S// string
@@ -330,3 +330,70 @@ iex(5)> map.three
 ## Patern matching
 
 Match arbirtrary structured data against a pattern, extract elements of that data along the way, and choose what code to run based on the patterns that match.
+
+`a = 1` does not assign `a` to `1`, it binds `a` to `1`.
+This means that `1 = a` will not give an error.
+
+When calling a function, the arfuments passed are not assigned to the parameters. Each argument is pattern matched to its parameter.
+
+For example, this func takes a two element tuple. Calling `func({1,2})` binds 1 to a and 2 to b:
+
+```elixir
+def func({ a, b }) do
+  IO.puts "a = #{a}, b = #{b}"
+end
+```
+
+We could also have the argument matched to the parameter so that we can access the tuple itself and both components of the tuple. Here, two pattern matches take place, and three variables are bound.
+
+```elixir
+def func(t = { a, b }) do
+  IO.puts "a = #{a}, b = #{b}, is_tuple{t}"
+end
+# t = {a,b} = {1,2}
+```
+
+This function is invoked only if it is passed a two element tuple where the first element is the atom `:ok`.
+
+```elixir
+def read_file({ :ok, file }) do
+  ...
+end
+```
+
+Example of function overloading:
+
+```elixir
+def read_file({ :ok, file }) do
+  file
+  |> IO.read(:line)
+end
+
+def read_file({ :error, reason }) do
+  Logger.error("File error: #{reason}")
+  []
+end
+
+"my_file.txt"
+|> File.open
+|> read_file
+```
+
+To Elixir, a list `[1, 2, 3]` looks like:
+
+```elixir
+[ 1 | [ 2 | [ 3 | [] ] ] ]
+```
+
+When matching lists, you can have multiple head elements in the match:
+
+```elixir
+[ a, b | tail ]       # matches a list of two or more elements,
+                      # putting the first into a, the second in b,
+                      # and the rest as a list in tail
+
+[ a, a | tail ]       # matches a list where the first two elements
+                      # are the same
+
+[ a | [ a | tail ] ]  # same as the previous example
+```
