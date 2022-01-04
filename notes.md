@@ -397,3 +397,11 @@ When matching lists, you can have multiple head elements in the match:
 
 [ a | [ a | tail ] ]  # same as the previous example
 ```
+
+## Structures
+
+Declared with `defstruct()`
+
+Like maps, but the list of keys are predefined and cannot be changed at runtime.
+
+Structures are always associated with a module, and the structure will always have the name of the module. Structures are meant to hold the data that is processed by that module's functions.
