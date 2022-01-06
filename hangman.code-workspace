@@ -1,4 +1,4 @@
 {
-  "folders": [{ "path": "hangman" }, { "path": "dictionary" }],
+  "folders": [{ "path": "hangman" }, { "path": "dictionary" }, {"path": "text_client"}],
   "settings": {}
 }

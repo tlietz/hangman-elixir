@@ -405,3 +405,45 @@ Declared with `defstruct()`
 Like maps, but the list of keys are predefined and cannot be changed at runtime.
 
 Structures are always associated with a module, and the structure will always have the name of the module. Structures are meant to hold the data that is processed by that module's functions.
+
+## Pattern matching in functions
+
+```elixir
+def make_move(game = %{ game_state: state }, _guess)
+```
+
+This will match any call where the first parameter is a map containing a key game_state. The corresponding value will be bound to the parameter state, and the overall map will be bound to game.
+
+A when clause (also called a guard clause) can further restrict when a particular variant of a function can be called. The when is executed after the parameters are bound, so the values of parameters can be used.
+
+## About Loops
+
+Every time a pattern match occurs in Elixir, a new variable is created. This means that if a variable is defined outside a comprehension body, then reassigned inside, the value would not be updated.
+
+This function is not tail recursive because the last operation executed before the recursive call would be `+`, not the recursive call itself.
+
+```elixir
+def sum(0), do: 0
+def sum(n), do: n + sum(n-1)
+```
+
+To allow tail optimization, it would have to be the following. Now the last operation executed is the recursive call itself:
+
+```elixir
+def sum(n), do: sum(n, 0)
+defp sum(0, acc), do: acc
+defp sum(n, acc), do: sum(n - 1, acc + n)
+```
+
+## Concurrency
+
+The elixir model of concurrency is built on sending messages between processes.
+
+A `process` is internal to the Elixir runtime system, it is not an OS process.
+Elixir process are much more efficient.
+
+`spawn` runs a function in a seperate process. It takes either an anonymous function or MFA (Module, Function, Arguments).
+The module part is its name, the function is the function name as an atom,
+and the arguments are represented as a list.
+
+`sleep` is rarely used in actual code. If you are using it, try to think about a better way.

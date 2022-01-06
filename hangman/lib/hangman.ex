@@ -12,7 +12,8 @@ defmodule Hangman do
   # end
 
   @spec make_move(game, String.t()) :: {game, Type.tally()}
-  def make_move(game, guess) do
-    {game, guess}
-  end
+  defdelegate make_move(game, guess), to: Game
+
+  @spec tally(game) :: Type.tally()
+  defdelegate tally(game), to: Game
 end
