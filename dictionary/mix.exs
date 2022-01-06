@@ -11,9 +11,13 @@ defmodule Dictionary.MixProject do
     ]
   end
 
-  # Run "mix help compile.app" to learn about applications.
+  # This is a callback whose job is to return a list of applications to be started
+  # to the runtime system.
   def application do
     [
+      # This line tells it to start our application by running the `start` function
+      # in `Dictionary.Runtime.Application`
+      mod: {Dictionary.Runtime.Application, []},
       extra_applications: [:logger]
     ]
   end

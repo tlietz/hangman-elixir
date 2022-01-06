@@ -447,3 +447,49 @@ The module part is its name, the function is the function name as an atom,
 and the arguments are represented as a list.
 
 `sleep` is rarely used in actual code. If you are using it, try to think about a better way.
+
+## Runtime vs. Implementation Divide
+
+Applications can be structured such that the runtime and implementation code is seperated.
+
+The environment in which the code runs include the following. It kicks off the processes, monitors them, etc. Basically the server itself. In our case, it is anything in the `runtime/` directory:
+
+- process structure
+- configuration
+- error handling
+- scaling
+
+The code that implements the business logic include. In our case, it is anything in the `impl/` directory:
+
+- problem specific code
+- algorithms
+- data strcutures
+- Anything that is unit tested
+
+In elixir, an `application` is something that starts itself automatically and manages its own lifecycle. This means that the application can choose to restart itself in the event that it crashes.
+
+## Project to Application
+
+An elixir project can be a plain library, which is just the code, and has no independent existence.
+
+As soon as that library can run its own process and has its own state, it becomes an application.
+This includes implementing the following:
+
+- write a module to start processes
+- tell runtime where to find this module
+
+A typical application is usually a hybrid; having code that runs in the context of its own processes, and also code that is called directly from other applications, and code which runs in their processes. The latter is the interface from the application to the outside world.
+
+## How to Decide between putting code in the processes runtime repo vs. the application logic impl directories?
+
+First, think about ownership of state.
+
+If the code needs to persist some state, then it will need to be in a process.
+State can only be accessed by code that is executing, and so that code will need a process on which to run.
+
+If the code is just mutating data, then it is likely to be a pure function.
+This function does not maintain state; it receives it as a parameter, then forgets when it exits.
+
+Second, functions are easier than processes.
+The more stuff you can put into the `impl` tree, the easier you'll make things for yourself and for the people who will have to work with the code.
+The process side will always be "in control", but delegate to the functional side as soon as possible.
