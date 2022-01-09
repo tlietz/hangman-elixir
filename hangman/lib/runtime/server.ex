@@ -1,6 +1,7 @@
 # This GenServer runs in its own process and maintains its own state internally.
 defmodule Hangman.Runtime.Server do
   @type t :: pid
+  defstruct(game_count: 0)
 
   alias Hangman.Impl.Game
 
@@ -8,11 +9,18 @@ defmodule Hangman.Runtime.Server do
   # 9 seperate callbacks would have to have handlers for it to compile without this behavior.
   use GenServer
 
+  # TODO:
+  # 1) Record number of new games that have been created, outputting total in server iex when it gets updated.
+  # 2) Record the name of each node as it connects, and write out the current list on each connection.
+  # 3) Monitor when a connected client goes away, and remove that Node from the list the server keeps.
+
   # Client process
   def start_link(_) do
     # Takes tke module that will be the GenServer, and then arguments
-
-    GenServer.start_link(__MODULE__, nil)
+    game_info = GenServer.start_link(__MODULE__, nil)
+    {_, pid} = game_info
+    IO.inspect(pid)
+    game_info
   end
 
   # Server process
