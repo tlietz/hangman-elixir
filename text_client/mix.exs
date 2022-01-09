@@ -14,6 +14,8 @@ defmodule TextClient.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
+      # Load the code for hangman in the application, but to not start it
+      included_applications: [:hangman],
       extra_applications: [:logger]
     ]
   end
