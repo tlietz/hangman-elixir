@@ -19,5 +19,6 @@ defmodule Hangman do
   @spec tally(game) :: Type.tally()
   def tally(game) do
     GenServer.call(game, {:tally})
+    pid
   end
 end
