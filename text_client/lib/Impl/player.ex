@@ -20,7 +20,7 @@ defmodule TextClient.Impl.Player do
 
   def interact({game, tally}) do
     IO.puts(feedback_for(tally))
-    current_word(tally)
+    IO.puts(current_word(tally))
 
     tally = Hangman.make_move(game, get_guess())
     interact({game, tally})
@@ -35,14 +35,14 @@ defmodule TextClient.Impl.Player do
   def feedback_for(%{game_state: :already_used}), do: "You already used that letter"
 
   def current_word(tally) do
-    IO.puts([
+    [
       "Word so far: ",
       tally.letters |> Enum.join(" "),
       IO.ANSI.green() <> "    turns left: " <> IO.ANSI.reset(),
       tally.turns_left |> to_string,
       "    used so far: ",
       tally.used |> Enum.join(",")
-    ])
+    ]
   end
 
   def get_guess() do
