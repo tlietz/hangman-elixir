@@ -17,6 +17,7 @@ defmodule Hangman.MixProject do
   # mix.exs -> runtime (application.ex) -> supervisor (server.ex) -> Agent (word_list.ex)
   def application do
     [
+      mod: {Hangman.Runtime.Application, []},
       extra_applications: [:logger]
     ]
   end
