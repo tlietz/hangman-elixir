@@ -27,7 +27,7 @@ defmodule TextClient.Impl.Player do
   end
 
   def feedback_for(tally = %{game_state: :initializing}) do
-    "I am thinking of a #{tally.letters |> length} letter word"
+    "I am thinking of a #{tally.letters |> length} letter word."
   end
 
   def feedback_for(%{game_state: :good_guess}), do: "Good guess!"
