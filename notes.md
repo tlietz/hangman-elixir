@@ -493,3 +493,138 @@ This function does not maintain state; it receives it as a parameter, then forge
 Second, functions are easier than processes.
 The more stuff you can put into the `impl` tree, the easier you'll make things for yourself and for the people who will have to work with the code.
 The process side will always be "in control", but delegate to the functional side as soon as possible.
+
+## Supervisors
+
+A supervisor monitors one or more processes.
+
+A supervisor is just another process, so supervisors can monitor other supervisors.
+
+Supervisors sit outside the regular process structure.
+
+Supervision is a separate concern from application functionality.
+Therefore, tests should try to be written separately from the application logic.
+In a way, supervision tests are like integration tests.
+
+## Agents
+
+A specific kind of server that is designed to hold state, and execute functions on that state.
+
+For most logic, and many servers, we need more than that. That is what GenServers are for.
+
+## GenServer
+
+Gen(eric)Server
+
+A server is an independent process. This is code that will wrap any server in the elixir world.
+It is an abstraction that allows us to write code that runs in a server without worrying
+about details such as lifecycle management, timeouts, resource allocation, failure monitoring, etc.
+
+GenServers have two APIs, the external API that has code which runs in the client process, and an internal callback which runs in the server process.
+
+They communicate via messages but live in different environment.
+
+The calling process stops, monitors, and invokes (calls) the server process.
+
+The server code is called using callbacks. For example, there will be callbacks saying that a new server is going to be initialized, somebody want to do a function on you, etc.
+
+Calling process:
+
+```elixir
+{:ok, pid} = GenServer.start_link(GameServer, args)
+
+return_value = GenServer.call(pid, {:make_move, "a"})
+```
+
+Server process:
+
+```elixir
+defmodule GameServer do
+  use GenServer
+
+  # GenServer calls this function while starting server
+  def init(args) do
+    state = create_state(args)
+    # `state` is passed into all subsequent callbacks
+    {:ok, state}
+  end
+
+  # one function handles all calls made from GenServer,
+  # pattern matching the other possibilities.
+  def handle_call({:make_move, guess}, _from, state) do
+    # makes move, and updates state.
+    {:reply, return_value, new_state}
+  end
+
+end
+```
+
+## Nodes
+
+Every instance of an elixir VM creates a `node`. Typing `iex` or `mix` at commnad line creates a node. In that node, `applications` are run.
+
+Instances of the same application in seperate nodes are completely independent.
+
+By default, each Node is isolated from all other nodes. The only way for two nodes to connect is by both having a name.
+
+There are two kinds of Node names. Short name and long name.
+
+Short name = fred@quarry
+Long name = wilma@quarry.bedrock.com (or the ip address)
+
+Typicaly will use short name if all nodes are on same computer.
+Long names otherwise.
+
+Cannot mix the two. All node names must either be short or long.
+
+To start a node:\
+mix --sname fred\
+mix --name wilma@quarry.bedrock.com
+
+Nodes try to connect the first time one references another.
+
+To do that manually:
+
+`Node.connect(:fred@myhost)`
+
+Node connections are transitive: If two nodes are connected, and a third node connects to either of them, all three nodes become interconnected. However, this can be arranged that it does not happen. Useful for large networks.
+
+Elixir is largely network transparent: Something you can do on one node can mostly be done on a remote node as well:\
+
+- Process creation
+- Linking
+- Monitoring
+- Message passing (sometimes another token will need to be added for this)
+
+## Process Identifier (pid)
+
+PID: #PID<Node.processId>
+
+Local PID: `#PID<0.90.0>`
+Registered name: `:chatbot`
+Name + node: `{:chatbot, :n1@farm.com}`
+Remote PID: `#PID<12786.90.0>`
+
+If a node sends a PID to another node, then that PID is automatically translated on the way out. It will have the node ID placed in the first digit of the PID. Also, any messages sent to that newly connected Node that was intended for the original node will be rerouted to the original Node.
+
+This means that once two nodes are connected, they will automatically map PIDs sent between them so that a reply can always go back to the correct node.
+
+## Naming a PID
+
+```elixir
+pid = spawn . . .
+Process.register(pid, :my_process)
+
+send(pid, :hello)
+# is the same as...
+send(:my_process, :hello)
+```
+
+You can send to a process on another node by using a tuple cointaining the process name and node name in place of the pid:
+
+```elixir
+send( { :my_process, :node1@quarry }, :hello )
+```
+
+Elixir does not have a reply function for their messages, they are strictly one way.
+If you want something back, you have to tell the remote process where to send it to.

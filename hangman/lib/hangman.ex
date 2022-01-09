@@ -1,19 +1,23 @@
 defmodule Hangman do
   # Automatically aliases `Hangman.Impl.Game` to `Game`
-  alias Hangman.Impl.Game
+  alias Hangman.Runtime.Server
   alias Hangman.Type
   # Opaque defines a type that cannot be accessed outside this module
-  @opaque game :: Game.t()
+  @opaque game :: Server.t()
 
   @spec new_game :: Game.t()
-  defdelegate new_game, to: Game
-  # def new_game do
-  #   Game.new_game()
-  # end
+  def new_game do
+    {:ok, pid} = Server.start_link()
+    pid
+  end
 
   @spec make_move(game, String.t()) :: {game, Type.tally()}
-  defdelegate make_move(game, guess), to: Game
+  def make_move(game, guess) do
+    GenServer.call(game, {:make_move, guess})
+  end
 
   @spec tally(game) :: Type.tally()
-  defdelegate tally(game), to: Game
+  def tally(game) do
+    GenServer.call(game, {:tally})
+  end
 end

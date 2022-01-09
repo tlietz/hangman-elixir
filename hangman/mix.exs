@@ -12,6 +12,9 @@ defmodule Hangman.MixProject do
   end
 
   # Run "mix help compile.app" to learn about applications.
+  #
+  # Processes when our application runs:
+  # mix.exs -> runtime (application.ex) -> supervisor (server.ex) -> Agent (word_list.ex)
   def application do
     [
       extra_applications: [:logger]
