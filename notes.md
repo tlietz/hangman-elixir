@@ -628,3 +628,27 @@ send( { :my_process, :node1@quarry }, :hello )
 
 Elixir does not have a reply function for their messages, they are strictly one way.
 If you want something back, you have to tell the remote process where to send it to.
+
+## Server to Service
+
+Right now, every client has a Hangman server in the same node. When you start a cient, it talks to a corresponding Hangman server, and they all talk to the same dictionary.
+
+That is fine, but we want to change the organization such that the Hangman servers are in their own Node, then have the clients run seperately in their own Node.
+
+We don't always want to do that, but in some cases, you should. For example, the services may need access to special resources that are not exposed at client level. Or maybe it needs to be secure. Perhaps there are different deployment characteristics. Or clients might not have the capacity to run all the service.
+
+How can we acheive that?\
+
+- We will have a Game Service as a free running application and will have a Game Creator as its main process.
+- Client will ask it to create a game
+- The Game Service will return a Game ID (pid) to the client.
+  From that point on, the client can now interact with that game.
+
+The Game Service will be a `Dynamic Supervisor`. It is similar to the regular Supervisor, except it does not start with any child processes, but we can tell it to create child processes. Those child processes will then be supervised.
+
+The general flow of the Hangman code will be:\
+
+- Runtime creates application
+- Application creates top level supervisor
+- supervisor supervises Dynamic Supervisor
+- Dynamic Supervisor creates and supervises one or more Hangman servers.
