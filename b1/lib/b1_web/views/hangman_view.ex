@@ -12,7 +12,7 @@ defmodule B1Web.HangmanView do
   end
 
   @status_fields %{
-    initializing: {"initializing", "Guess the word, a letter a a time"},
+    initializing: {"initializing", "Guess the word, a letter at a time"},
     good_guess: {"good-guess", "Good guess!"},
     bad_guess: {"bad-guess", "Sorry, that's a bad guess"},
     won: {"won", "You won!"},

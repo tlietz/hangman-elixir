@@ -8,11 +8,11 @@
 import Config
 
 # Configures the endpoint
-config :b1, B1Web.Endpoint,
+config :b2, B2Web.Endpoint,
   url: [host: "localhost"],
-  render_errors: [view: B1Web.ErrorView, accepts: ~w(html json), layout: false],
-  pubsub_server: B1.PubSub,
-  live_view: [signing_salt: "s3PpN/CU"]
+  render_errors: [view: B2Web.ErrorView, accepts: ~w(html json), layout: false],
+  pubsub_server: B2.PubSub,
+  live_view: [signing_salt: "gdYtSZQC"]
 
 # Configure esbuild (the version is required)
 config :esbuild,
@@ -32,12 +32,6 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
-config :phoenix_live_reload,
-  dirs: [
-    "../../b1",
-    "../../hangman"
-  ]
-
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
-import_config("#{config_env()}.exs")
+import_config "#{config_env()}.exs"
