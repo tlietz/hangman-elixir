@@ -11,7 +11,6 @@ defmodule Hangman.Runtime.Server do
   # Client process
   def start_link(_) do
     # Takes tke module that will be the GenServer, and then arguments
-
     GenServer.start_link(__MODULE__, nil)
   end
 
