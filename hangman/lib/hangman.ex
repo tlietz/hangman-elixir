@@ -1,5 +1,4 @@
 defmodule Hangman do
-  # Automatically aliases `Hangman.Impl.Game` to `Game`
   alias Hangman.Runtime.Server
   alias Hangman.Type
   # Opaque defines a type that cannot be accessed outside this module
